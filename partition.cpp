@@ -661,14 +661,7 @@ void TWPartition::Setup_Data_Partition(bool Display_Error) {
 			LOGERR("Primary block device '%s' for mount point '%s' is not present!\n", Primary_Block_Device.c_str(), Mount_Point.c_str());
 		}
 	} else {
-
-		if (!Decrypt_FBE_DE()) {
-			LOGINFO("Trying wrapped key.\n");
-			property_set("fbe.data.wrappedkey", "true");
-				if (!Decrypt_FBE_DE()) {
-					LOGERR("Unable to decrypt FBE device\n");
-				}
-		}
+		Decrypt_FBE_DE();
 	}
 	if (datamedia && (!Is_Encrypted || (Is_Encrypted && Is_Decrypted))) {
 		Setup_Data_Media();
