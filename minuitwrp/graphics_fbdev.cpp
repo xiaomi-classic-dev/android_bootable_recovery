@@ -250,13 +250,26 @@ static GRSurface* fbdev_init(minui_backend* backend) {
 
     /* check if we can use double buffering */
 #ifndef RECOVERY_GRAPHICS_FORCE_SINGLE_BUFFER
+#ifdef RECOVERY_GRAPHICS_FB_PAGE_ALIGN
+    size_t buffer_size = gr_framebuffer[0].height * gr_framebuffer[0].row_bytes;
+    // Legacy MSM calc_fb_offset() page-aligns each framebuffer's start.
+    const size_t page_size = getpagesize();
+    buffer_size = ((buffer_size + page_size - 1) / page_size) * page_size;
+    printf("Page-aligned framebuffer buffer size = %zu\n", buffer_size);
+    if (buffer_size <= fi.smem_len / 2) {
+#else
     if (vi.yres * fi.line_length * 2 <= fi.smem_len) {
+#endif
         double_buffered = true;
         printf("double buffered\n");
 
         memcpy(gr_framebuffer+1, gr_framebuffer, sizeof(GRSurface));
         gr_framebuffer[1].data = gr_framebuffer[0].data +
+#ifdef RECOVERY_GRAPHICS_FB_PAGE_ALIGN
+            buffer_size;
+#else
             gr_framebuffer[0].height * gr_framebuffer[0].row_bytes;
+#endif
 
     } else {
 #else

@@ -99,6 +99,10 @@ ifeq ($(RECOVERY_GRAPHICS_FORCE_SINGLE_BUFFER), true)
 LOCAL_CFLAGS += -DRECOVERY_GRAPHICS_FORCE_SINGLE_BUFFER
 endif
 
+ifeq ($(RECOVERY_GRAPHICS_FB_PAGE_ALIGN), true)
+LOCAL_CFLAGS += -DRECOVERY_GRAPHICS_FB_PAGE_ALIGN
+endif
+
 #Remove the # from the line below to enable event logging
 #TWRP_EVENT_LOGGING := true
 ifeq ($(TWRP_EVENT_LOGGING), true)
